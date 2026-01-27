@@ -3,7 +3,6 @@ package driver;
 import config.ConfigManager;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
-import io.appium.java_client.ios.options.XCUITestOptions;
 
 import java.net.URL;
 
@@ -16,7 +15,12 @@ public class DriverFactory {
         URL serverUrl;
 
         if (runMode.equalsIgnoreCase("cloud")) {
-            serverUrl = new URL(ConfigManager.get("cloud.url"));
+
+            String user = System.getenv("BROWSERSTACK_USER");
+            String key = System.getenv("BROWSERSTACK_KEY");
+
+            serverUrl = new URL("https://" + user + ":" + key + "@hub-cloud.browserstack.com/wd/hub");
+
         } else {
             serverUrl = new URL("http://127.0.0.1:" + port);
         }
@@ -28,28 +32,16 @@ public class DriverFactory {
             options.setDeviceName(ConfigManager.get("deviceName"));
             options.setPlatformName("Android");
             options.setPlatformVersion(ConfigManager.get("platformVersion"));
-            options.setAppPackage(ConfigManager.get("appPackage"));
-            options.setAppActivity(ConfigManager.get("appActivity"));
+            options.setApp(System.getenv("BROWSERSTACK_APP"));
             options.setAutomationName("UiAutomator2");
-            options.autoGrantPermissions();
-            options.setSystemPort(0);
+
+            options.setCapability("project", "TimeTo Mobile");
+            options.setCapability("build", "GitHub CI");
+            options.setCapability("name", "Android Smoke Test");
 
             return new AppiumDriver(serverUrl, options);
         }
 
-        else if (platform.equalsIgnoreCase("ios")) {
-
-            XCUITestOptions options = new XCUITestOptions();
-
-            options.setDeviceName(ConfigManager.get("iosDeviceName"));
-            options.setPlatformName("iOS");
-            options.setPlatformVersion(ConfigManager.get("iosPlatformVersion"));
-            options.setBundleId(ConfigManager.get("bundleId"));
-            options.setWdaLocalPort(8100 + (int)(Thread.currentThread().getId() % 100));
-
-            return new AppiumDriver(serverUrl, options);
-        }
-
-        throw new RuntimeException("Invalid platform: " + platform);
+        throw new RuntimeException("Invalid platform");
     }
 }
