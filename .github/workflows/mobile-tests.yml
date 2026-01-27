@@ -33,4 +33,4 @@ jobs:
         shell: bash
 
       - name: Run Android Tests
-        run: mvn clean test -Dsuite=src/test/resources/suites/android.testng.xml
+        run: mvn clean test "-Dsuite=src/test/resources/suites/android.testng.xml"
