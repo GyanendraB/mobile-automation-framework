@@ -13,7 +13,7 @@ public class DriverManager {
     public static AppiumDriver getDriver() {
         return driver.get();
     }
-    
+
     public static void unload() {
         driver.remove();
     }

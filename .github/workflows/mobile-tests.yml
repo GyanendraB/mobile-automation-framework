@@ -1,0 +1,36 @@
+name: Mobile Automation CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  android-tests:
+    runs-on: windows-latest   # needed for Appium + Android
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Appium
+        run: npm install -g appium
+
+      - name: Start Appium
+        run: |
+          appium -p 4723 --log appium.log &
+        shell: bash
+
+      - name: Run Android Tests
+        run: mvn clean test -Dsuite=src/test/resources/suites/android.testng.xml
