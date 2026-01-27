@@ -8,13 +8,7 @@ import java.net.URL;
 
 public class DriverFactory {
 
-    private static ThreadLocal<AppiumDriver> driver = new ThreadLocal<>();
-
-    public static AppiumDriver getDriver() {
-        return driver.get();
-    }
-
-    public static void initDriver(String platform, int port) throws Exception {
+    public static AppiumDriver createDriver(String platform, int port) throws Exception {
 
         URL serverUrl = new URL("http://127.0.0.1:" + port);
 
@@ -27,47 +21,24 @@ public class DriverFactory {
             options.setAutomationName("UiAutomator2");
             options.setAppPackage("me.timeto.app");
             options.setAppActivity("me.timeto.app.MainActivity");
-
-            // Required for parallel Android runs
-            options.setSystemPort(0); // let Appium auto-assign
-
             options.autoGrantPermissions();
+            options.setSystemPort(0);   // parallel-safe
 
-            AppiumDriver baseDriver =
-                    new AppiumDriver(serverUrl, options);
+            return new AppiumDriver(serverUrl, options);
+        }
 
-            // 🔥 Healenium wrapped driver
-//            AppiumDriver healingDriver =
-//                    (AppiumDriver) SelfHealingDriver.create(baseDriver);
-
-            driver.set(baseDriver);
-
-        } else if (platform.equalsIgnoreCase("ios")) {
+        else if (platform.equalsIgnoreCase("ios")) {
 
             XCUITestOptions options = new XCUITestOptions();
             options.setDeviceName("iPhone 14");
             options.setPlatformName("iOS");
             options.setPlatformVersion("17.0");
             options.setBundleId("com.example.iosapp");
-
-            // Required for parallel iOS runs
             options.setWdaLocalPort(8100 + (int) (Thread.currentThread().getId() % 100));
 
-            AppiumDriver baseDriver =
-                    new AppiumDriver(serverUrl, options);
-
-//            // 🔥 Healenium wrapped driver
-//            AppiumDriver healingDriver =
-//                    (AppiumDriver) SelfHealingDriver.create(baseDriver);
-
-            driver.set(baseDriver);
+            return new AppiumDriver(serverUrl, options);
         }
-    }
 
-    public static void quitDriver() {
-        if (driver.get() != null) {
-            driver.get().quit();
-            driver.remove();
-        }
+        throw new RuntimeException("Invalid platform: " + platform);
     }
 }

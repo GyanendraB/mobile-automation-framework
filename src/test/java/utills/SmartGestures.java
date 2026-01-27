@@ -1,6 +1,7 @@
 package utills;
 
 import driver.DriverFactory;
+import driver.DriverManager;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
@@ -14,7 +15,7 @@ import java.util.Map;
 public class SmartGestures {
 
     private static AppiumDriver driver() {
-        return DriverFactory.getDriver();
+        return DriverManager.getDriver();
     }
 
     /* ---------------- ELEMENT SWIPE (LATEST) ---------------- */

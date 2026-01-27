@@ -12,7 +12,7 @@ public class HomeTest extends BaseTest {
     @Test
     public void verifyHomePageTexts() {
 
-        HomePage homePage = new HomePage(driver);
+        HomePage homePage = new HomePage();   // 🔥 no driver passed
 
         Assert.assertTrue(
                 homePage.isHowToUseDisplayed(),
@@ -24,6 +24,7 @@ public class HomeTest extends BaseTest {
                 "Read How to Use the App",
                 "Home page text mismatch"
         );
+
         getTest().pass("Verified home page text");
     }
 }
