@@ -1,0 +1,14 @@
+<suite name="iOS Suite" parallel="tests" thread-count="1">
+    <parameter name="runMode" value="ios"/>
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+    </listeners>
+    <test name="iOS">
+        <parameter name="platform" value="ios"/>
+        <parameter name="port" value="4725"/>
+        <classes>
+            <class name="testCases.HomeTest"/>
+            <class name="testCases.SampleTest"/>
+        </classes>
+    </test>
+</suite>

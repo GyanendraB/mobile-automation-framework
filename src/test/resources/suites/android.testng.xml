@@ -1,0 +1,14 @@
+<suite name="Android Suite" parallel="tests" thread-count="1">
+    <parameter name="runMode" value="android"/>
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+    </listeners>
+    <test name="Android">
+        <parameter name="platform" value="android"/>
+        <parameter name="port" value="4723"/>
+        <classes>
+            <class name="testCases.HomeTest"/>
+            <class name="testCases.SampleTest"/>
+        </classes>
+    </test>
+</suite>
