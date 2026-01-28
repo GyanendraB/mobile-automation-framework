@@ -27,7 +27,7 @@ public class DriverFactory {
         if (platform.equalsIgnoreCase("android")) {
 
             UiAutomator2Options options = new UiAutomator2Options();
-// To run on browserStack
+// To run on browserStack  
             if (runMode.equalsIgnoreCase("cloud")) {
 
                 Map<String, Object> bstackOptions = new HashMap<>();
