@@ -63,11 +63,9 @@ public class DriverFactory {
             options.setAppActivity("me.timeto.app.MainActivity");
             options.setAutomationName("UiAutomator2");
             options.autoGrantPermissions();
-
             // Parallel-safe local execution
             options.setSystemPort(0);
         }
-
         return new AppiumDriver(serverUrl, options);
     }
 }
