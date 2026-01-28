@@ -13,50 +13,61 @@ public class DriverFactory {
     public static AppiumDriver createDriver(String platform, int port) throws Exception {
 
         String runMode = ConfigManager.get("run.mode");
+        URL serverUrl = getServerUrl(runMode, port);
 
-        URL serverUrl;
+        if (platform.equalsIgnoreCase("android")) {
+            return createAndroidDriver(runMode, serverUrl);
+        }
+
+        throw new RuntimeException("Unsupported platform: " + platform);
+    }
+
+    // ---------------- SERVER URL ----------------
+    private static URL getServerUrl(String runMode, int port) throws Exception {
 
         if (runMode.equalsIgnoreCase("cloud")) {
             String user = System.getenv("BROWSERSTACK_USER");
             String key = System.getenv("BROWSERSTACK_KEY");
-            serverUrl = new URL("https://" + user + ":" + key + "@hub-cloud.browserstack.com/wd/hub");
+            return new URL("https://" + user + ":" + key +
+                    "@hub-cloud.browserstack.com/wd/hub");
+        }
+
+        // LOCAL Appium
+        return new URL("http://127.0.0.1:" + port);
+    }
+
+    // ---------------- ANDROID DRIVER ----------------
+    private static AppiumDriver createAndroidDriver(String runMode, URL serverUrl) {
+
+        UiAutomator2Options options = new UiAutomator2Options();
+
+        if (runMode.equalsIgnoreCase("cloud")) {
+
+            // ---------- BrowserStack ----------
+            Map<String, Object> bstackOptions = new HashMap<>();
+            bstackOptions.put("deviceName", "Samsung Galaxy S22");   // known-good device
+            bstackOptions.put("osVersion", "12");
+            bstackOptions.put("projectName", "TimeTo Mobile");
+            bstackOptions.put("buildName", "GitHub CI");
+            bstackOptions.put("sessionName", "Android Smoke Test");
+
+            options.setCapability("bstack:options", bstackOptions);
+            options.setApp(System.getenv("BROWSERSTACK_APP"));
+
         } else {
-            serverUrl = new URL("http://127.0.0.1:" + port);
+
+            // ---------- LOCAL (REAL DEVICE) ----------
+            options.setDeviceName("49d998a8");          // your real device ID
+            options.setPlatformVersion("11");
+            options.setAppPackage("me.timeto.app");
+            options.setAppActivity("me.timeto.app.MainActivity");
+            options.setAutomationName("UiAutomator2");
+            options.autoGrantPermissions();
+
+            // Parallel-safe local execution
+            options.setSystemPort(0);
         }
 
-        if (platform.equalsIgnoreCase("android")) {
-
-            UiAutomator2Options options = new UiAutomator2Options();
-// To run on browserStack  
-            if (runMode.equalsIgnoreCase("cloud")) {
-
-                Map<String, Object> bstackOptions = new HashMap<>();
-                bstackOptions.put("userName", System.getenv("BROWSERSTACK_USER"));
-                bstackOptions.put("accessKey", System.getenv("BROWSERSTACK_KEY"));
-                bstackOptions.put("deviceName", ConfigManager.get("deviceName"));
-                bstackOptions.put("osVersion", ConfigManager.get("platformVersion"));
-                bstackOptions.put("projectName", "TimeTo Mobile");
-                bstackOptions.put("buildName", "GitHub CI");
-                bstackOptions.put("sessionName", "Android Smoke");
-
-                options.setCapability("bstack:options", bstackOptions);
-                options.setCapability("app", System.getenv("BROWSERSTACK_APP"));
-                options.setCapability("platformName", "Android");
-
-            } else {
-                options.setDeviceName(ConfigManager.get("deviceName"));
-                options.setPlatformName("Android");
-                options.setPlatformVersion(ConfigManager.get("platformVersion"));
-                options.setAppPackage(ConfigManager.get("appPackage"));
-                options.setAppActivity(ConfigManager.get("appActivity"));
-                options.setApp(ConfigManager.get("appPath"));
-                options.autoGrantPermissions();
-                options.setSystemPort(0);
-            }
-
-            return new AppiumDriver(serverUrl, options);
-        }
-
-        throw new RuntimeException("Invalid platform");
+        return new AppiumDriver(serverUrl, options);
     }
 }
