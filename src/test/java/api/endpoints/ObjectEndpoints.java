@@ -1,6 +1,6 @@
-package api;
+package api.endpoints;
 
-import api.ObjectPayload;
+import api.payload.ObjectPayload;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 

@@ -18,6 +18,4 @@ public class RegistrationData {
     private double weight;
     private boolean diabetic;
 
-
-
 }

@@ -1,4 +1,4 @@
-package api;
+package api.payload;
 
 import java.util.Map;
 

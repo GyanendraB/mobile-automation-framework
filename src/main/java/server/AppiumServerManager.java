@@ -12,13 +12,7 @@ public class AppiumServerManager {
 
     public static void startServer() {
 
-        // 🔥 Do NOT start Appium when running in cloud (BrowserStack / Sauce)
-        if (ConfigManager.get("run.mode").equalsIgnoreCase("cloud")) {
-            System.out.println("Running in CLOUD mode. Skipping local Appium start.");
-            return;
-        }
-
-        if (service == null || !service.isRunning()) {
+         if (service == null || !service.isRunning()) {
 
             AppiumServiceBuilder builder = new AppiumServiceBuilder()
                     .withIPAddress("127.0.0.1")
@@ -34,11 +28,7 @@ public class AppiumServerManager {
 
     public static void stopServer() {
 
-        // 🔥 Do NOT stop anything in cloud mode
-        if (ConfigManager.get("run.mode").equalsIgnoreCase("cloud")) {
-            System.out.println("Running in CLOUD mode. No local Appium to stop.");
-            return;
-        }
+
 
         if (service != null && service.isRunning()) {
             service.stop();

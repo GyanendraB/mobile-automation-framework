@@ -70,6 +70,20 @@
                 <artifactId>selenium-os</artifactId>
                 <version>${selenium.version}</version>
             </dependency>
+            <!-- REST Assured -->
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured</artifactId>
+                <version>5.5.6</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- JSON Parsing -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.17.0</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
@@ -83,7 +97,7 @@
             <artifactId>java-client</artifactId>
             <version>${appium.version}</version>
         </dependency>
-        <!-- API Testing -->
+        <!-- api Testing -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -96,7 +110,7 @@
             <version>2.16.1</version>
         </dependency>
 
-        <!-- Selenium API -->
+        <!-- Selenium api -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
