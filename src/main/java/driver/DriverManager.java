@@ -3,7 +3,9 @@ package driver;
 import io.appium.java_client.AppiumDriver;
 
 public class DriverManager {
-
+    private DriverManager() {
+        // Prevent instantiation
+    }
     private static final ThreadLocal<AppiumDriver> driver = new ThreadLocal<>();
 
     public static void setDriver(AppiumDriver driverInstance) {
